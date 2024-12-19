@@ -134,6 +134,22 @@ function processComment(comment) {
   }
 }
 
+function happyNewYear() {
+  const now = new Date();
+  if (now.getMonth() != 11) return;
+  const currentYear = now.getFullYear();
+  const deadline = new Date(`${currentYear}-01-01`);
+  const delta = new Date(deadline - now);
+
+  document.querySelectorAll(".desktop-view-header").forEach((header) => {
+    if (header.dataset.bs_processed) return;
+    header.dataset.bs_processed = true;
+    const greeting = document.createElement("div");
+    greeting.innerHTML = `До Нового Года: ${delta.getDate()} дней!`;
+    header.prepend(greeting);
+  });
+}
+
 function onDOMChange() {
   betterTimer();
   betterTimeline();
@@ -142,6 +158,7 @@ function onDOMChange() {
     .forEach((comment) => {
       processComment(comment);
     });
+  happyNewYear();
 }
 
 (function () {
