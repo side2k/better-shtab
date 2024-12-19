@@ -168,10 +168,16 @@ function onDOMChange() {
   GM_addStyle(styles.commentsWithMRLinks);
   GM_addStyle(styles.boardAsList);
 
-  const app = document.querySelector(".app");
-
-  const observer = new MutationObserver((event) => {
-    onDOMChange();
-  });
-  observer.observe(app, { subtree: true, childList: true });
+  const observerInterval = setInterval(() => {
+    const app = document.querySelector(".app");
+    if (!app) {
+      return;
+    }
+    clearInterval(observerInterval);
+    console.log("Observing:", app);
+    const observer = new MutationObserver((event) => {
+      onDOMChange();
+    });
+    observer.observe(app, { subtree: true, childList: true });
+  }, 1000);
 })();
