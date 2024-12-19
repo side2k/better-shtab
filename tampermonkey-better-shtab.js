@@ -134,10 +134,10 @@ function onDOMChange() {
   GM_addStyle(styles.commentsWithMRLinks);
   GM_addStyle(styles.boardAsList);
 
-  const board = document.querySelector(".app");
+  const app = document.querySelector(".app");
 
   const observer = new MutationObserver((event) => {
     onDOMChange();
   });
-  observer.observe(board, { subtree: true, childList: true });
+  observer.observe(app, { subtree: true, childList: true });
 })();
