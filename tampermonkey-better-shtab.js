@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         better Shtab
 // @namespace    http://tampermonkey.net/
-// @version      2024-11-05
+// @version      2024-12-18
 // @description  Make shtab.app board look a bit better
 // @author       github.com/side2k
 // @match        https://my.shtab.app/*
+// @run-at       document-end
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=shtab.app
 // @grant        GM_addStyle
 // ==/UserScript==
@@ -39,55 +40,8 @@ const styles = {
         background-color: pink;
       }
     `,
-  boardAsList: `
-      body,
-      .board
-      {
-        overflow: visible !important;
-      }
-
-      .board {
-        display: block !important;
-      }
-
-      .board .board__group:first-child {
-        height: auto;
-        border-right: 0;
-      }
-
-      .board .draggable-group {
-        display: block;
-      }
-      .board .draggable-group .task-group-tile {
-        width: auto;
-      }
-
-      .task-group-tile.task-group-tile_collapsed {
-        height: 20px;
-        width: 500px !important;
-      }
-      .task-group-tile.task-group-tile_collapsed .group-header__actions {
-        align-items: start;
-        justify-items: start;
-        display: flex;
-      }
-
-      .task-group-tile .task-status-title {
-        color: black;
-        font-size: 8px;
-      }
-    `,
 };
 
-function boardAsList(board) {
-  board
-    .querySelectorAll(".task-group-tile_collapsed .group-header")
-    .forEach((groupHeader) => {
-      let statusBlock = groupHeader.querySelector(".task-status");
-      const statusTitle = groupHeader.querySelector(".task-status-title");
-      if (statusTitle || !statusBlock) {
-        return;
-      }
 
       const status = statusBlock.attributes.title
         ? statusBlock.attributes.title.value
@@ -115,11 +69,6 @@ function processComment(comment) {
 }
 
 function onDOMChange() {
-  const board = document.querySelector(".board");
-  if (!board) {
-    return;
-  }
-  boardAsList(board);
   document
     .querySelectorAll(".task-comments-list .comment")
     .forEach((comment) => {
