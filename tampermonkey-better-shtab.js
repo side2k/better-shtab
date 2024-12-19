@@ -42,18 +42,84 @@ const styles = {
     `,
 };
 
+function getBetterTimerInputEvent(timerForm) {
+  const [startInput, endInput] = timerForm.querySelectorAll(
+    ".select-time__inputs input"
+  );
+  const convertTime = (rawTime) => {
+    const timeMatch = rawTime.match(/(?<hours>\d{2})(?<minutes>\d{2})/);
+    if (!timeMatch) return;
+    return `${timeMatch.groups.hours}:${timeMatch.groups.minutes}`;
+  };
+  const eventHandler = (event) => {
+    const inputText = event.target.value;
+    let timeMatch = inputText.match(/(?<start>\d{4})(?<end>\d{4})/);
+    if (!timeMatch) {
+      return;
+    }
+    startInput.value = convertTime(timeMatch.groups.start);
+    endInput.value = convertTime(timeMatch.groups.end);
 
-      const status = statusBlock.attributes.title
-        ? statusBlock.attributes.title.value
-        : "No status";
+    startInput.dispatchEvent(new Event("input"));
+    endInput.dispatchEvent(new Event("input"));
+  };
+  return eventHandler;
+}
 
-      groupHeader
-        .querySelector("button")
-        .insertAdjacentHTML(
-          "beforeBegin",
-          `<div class="task-status-title">${status}</div>`
-        );
-    });
+function betterTimer() {
+  const className = "better-timer-form";
+  document.querySelectorAll(".add-task-time").forEach((timerForm) => {
+    if (timerForm.classList.contains(className)) {
+      return;
+    }
+    timerForm.classList.add(className);
+    const labels = timerForm.querySelector(".select-time__labels");
+    if (!labels) {
+      return;
+    }
+    const betterInput = document.createElement("input");
+    betterInput.classList.add("better-timer-button");
+    betterInput.addEventListener("input", getBetterTimerInputEvent(timerForm));
+    labels.insertAdjacentElement("afterEnd", betterInput);
+  });
+}
+
+function betterTimeline() {
+  const className = "better-timer-form";
+  document.querySelectorAll(".tabs+.timeline").forEach((timeline) => {
+    if (timeline.classList.contains(className)) {
+      return;
+    }
+    timeline.classList.add(className);
+
+    const addManyBtn = document.createElement("button");
+    addManyBtn.classList.add(
+      "button",
+      "button_padding_xs",
+      "button_type_secondary",
+      "button_sibling_none",
+      "button_border_secondary",
+      "button_radius_xxs",
+      "timeline-graph__button"
+    );
+    addManyBtn.innerHTML = `
+          <div class="svg-icon-wrapper svg-icon-wrapper_sm timeline-graph__cross"">
+            <div class="icon-with-indicator">
+              <svg viewBox="0 0 12 12" class="svg-icon svg-icon-plugin" style="width: 12px; height: 12px;">
+                <path pid="0" d="M11 1 1 11M1 1l10 10" _stroke="#888CA0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+                </path>
+              </svg>
+            </div>
+          </div>
+        `;
+
+    addManyBtn.addEventListener("click", (event) =>
+      console.log("not implemented yet 8(")
+    );
+
+    const buttons = timeline.querySelector(".timeline-graph__buttons");
+    buttons.prepend(addManyBtn);
+  });
 }
 
 function processComment(comment) {
@@ -69,6 +135,8 @@ function processComment(comment) {
 }
 
 function onDOMChange() {
+  betterTimer();
+  betterTimeline();
   document
     .querySelectorAll(".task-comments-list .comment")
     .forEach((comment) => {
